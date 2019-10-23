@@ -1,0 +1,26 @@
+node('master') {
+    stage('Fetch Source Code') {
+        cleanWs()
+        git([url:'https://github.com/shayim/beginning-jenkins.git', branch: 'add-new-function'])
+    }
+
+    dir('.') {
+        printMessage('Running pipeline')
+        stage('Testing') {
+            sh 'ls -la'
+            sh 'python new-function'
+        }
+        stage('Development') {
+            if(env.BRANCH_NAME == 'master') {
+                printMessage('Deploying the master branch')
+            } else {
+                printMessage('No deployment for branch [${env.BRANCH_NAME}]')
+            }
+        }
+        printMessage('Pipeline Completed')
+    }
+}
+
+def printMessage(message) {
+    echo "${message}"
+}
